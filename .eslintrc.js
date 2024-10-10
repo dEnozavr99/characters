@@ -8,7 +8,7 @@ module.exports = {
       {
         arrowParens: "always",
         bracketSameLine: true,
-        bracketSpacing: false,
+        bracketSpacing: true,
         singleQuote: false,
         trailingComma: "all",
       },
