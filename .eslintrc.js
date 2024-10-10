@@ -7,7 +7,7 @@ module.exports = {
       1,
       {
         arrowParens: "always",
-        bracketSameLine: true,
+        bracketSameLine: false,
         bracketSpacing: true,
         singleQuote: false,
         trailingComma: "all",
