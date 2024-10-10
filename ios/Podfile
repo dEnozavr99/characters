@@ -37,4 +37,7 @@ target 'characters' do
       # :ccache_enabled => true
     )
   end
+
+  pod "CocoaMQTT", :modular_headers => true
+  pod "MqttCocoaAsyncSocket", :modular_headers => true
 end
