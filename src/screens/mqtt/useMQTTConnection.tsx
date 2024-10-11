@@ -19,6 +19,7 @@ const MQTT_IN_TOPIC = "esp32/test_in";
 const MQTT_OUT_TOPIC = "esp32/test_out";
 // const MQTT_IN_TOPIC = "rn/test_in";
 // const MQTT_OUT_TOPIC = "rn/test_out";
+const MESSAGE = "Hello from RN";
 
 export const useMQTTConnection = () => {
   const { client } = useMQTTClient();
@@ -49,10 +50,12 @@ export const useMQTTConnection = () => {
       client.on(ClientEvent.Disconnect, disconnectEventHandler);
 
       const messageEventHandler: MessageEventHandler = (topic, message) => {
-        console.log("TOPIC", topic);
-        console.log("MESSAGE", message.toString());
+        const newData = { topic, message: message.toString() };
 
-        setCurrentData({ topic, message: message.toString() });
+        console.log("TOPIC", newData.topic);
+        console.log("MESSAGE", newData.message);
+
+        setCurrentData(newData);
       };
 
       client.on(ClientEvent.Message, messageEventHandler);
@@ -66,8 +69,6 @@ export const useMQTTConnection = () => {
       client.on(ClientEvent.Error, errorEventHandler);
 
       return () => {
-        console.log("CLEANUP");
-
         client.off(ClientEvent.Connect, connectEventHandler);
         client.off(ClientEvent.Disconnect, disconnectEventHandler);
         client.off(ClientEvent.Message, messageEventHandler);
@@ -79,8 +80,6 @@ export const useMQTTConnection = () => {
   }, [client]);
 
   const handleDisconnect = () => {
-    console.log("handleDisconnect");
-
     try {
       client.disconnect();
     } catch (error) {
@@ -89,9 +88,7 @@ export const useMQTTConnection = () => {
   };
 
   const handleConnect = () => {
-    // handleDisconnect();
-
-    console.log("handleConnect");
+    handleDisconnect();
 
     client
       .connect(BROKER, CONNECTION_OPTIONS)
@@ -106,14 +103,28 @@ export const useMQTTConnection = () => {
   const handleSubscribe = () => {
     try {
       client.subscribe(MQTT_IN_TOPIC);
+
+      console.log("SUBSCRIBED", MQTT_IN_TOPIC);
     } catch (error) {
       console.error("handleSubscribe error + " + error);
     }
   };
 
+  const handleUnsubscribe = () => {
+    try {
+      client.unsubscribe([MQTT_IN_TOPIC]);
+
+      console.log("UNSUBSCRIBED", MQTT_IN_TOPIC);
+    } catch (error) {
+      console.error("handleUnsubscribe error + " + error);
+    }
+  };
+
   const handlePublish = () => {
     try {
-      client.publish(MQTT_OUT_TOPIC, "Hello");
+      client.publish(MQTT_OUT_TOPIC, MESSAGE);
+
+      console.log("PUBLISHED", MQTT_OUT_TOPIC, MESSAGE);
     } catch (error) {
       console.error("handlePublish error + " + error);
     }
@@ -126,6 +137,7 @@ export const useMQTTConnection = () => {
     handleConnect,
     handleDisconnect,
     handleSubscribe,
+    handleUnsubscribe,
     handlePublish,
   };
 };

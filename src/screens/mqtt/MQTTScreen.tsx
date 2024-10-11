@@ -11,6 +11,7 @@ const MQTTScreen = () => {
     handleConnect,
     handleDisconnect,
     handleSubscribe,
+    handleUnsubscribe,
     handlePublish,
   } = useMQTTConnection();
 
@@ -33,6 +34,7 @@ const MQTTScreen = () => {
         <View style={styles.buttonsContainer}>
           <Button title="Subscribe" onPress={handleSubscribe} />
           <Button title="Publish" onPress={handlePublish} />
+          <Button title="Unsubscribe" onPress={handleUnsubscribe} />
         </View>
       </View>
     </View>
