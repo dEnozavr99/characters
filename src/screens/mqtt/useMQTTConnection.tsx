@@ -15,10 +15,9 @@ type MessageData = {
   message: string;
 };
 
-const MQTT_IN_TOPIC = "esp32/test_in";
-const MQTT_OUT_TOPIC = "esp32/test_out";
-// const MQTT_IN_TOPIC = "rn/test_in";
-// const MQTT_OUT_TOPIC = "rn/test_out";
+const MQTT_IN_TOPIC = "rn/test";
+const MQTT_OUT_TOPIC = "rn/test";
+
 const MESSAGE = "Hello from RN";
 
 export const useMQTTConnection = () => {
