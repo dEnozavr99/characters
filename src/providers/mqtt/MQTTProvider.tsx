@@ -21,21 +21,29 @@ export const MQTTProvider = ({ children }: PropsWithChildren) => {
 
         MqttClient.disconnect();
 
-        const result = await MqttClient.connect(BROKER, CONNECTION_OPTIONS);
-        console.log("CONNECTION RESULT", result);
+        const isConnected = await MqttClient.connect(
+          BROKER,
+          CONNECTION_OPTIONS
+        );
+
+        if (!isConnected) {
+          console.log("CLIENT IS NOT CONNECTED");
+
+          return;
+        }
 
         MqttClient.on(ClientEvent.Connect, (reconnect) => {
           console.log("CONNECTED");
           console.log("IS RECONNECT", reconnect);
 
-          MqttClient.subscribe(TOPIC_IN);
-
-          MqttClient.on(ClientEvent.Message, (topic, message) => {
-            console.log("TOPIC", topic);
-            console.log("MESSAGE", message);
-          });
-
           setIsClientInitialized(true);
+
+          MqttClient.subscribe(TOPIC_IN, 1);
+        });
+
+        MqttClient.on(ClientEvent.Message, (topic, message) => {
+          console.log("TOPIC", topic);
+          console.log("MESSAGE", message);
         });
       } catch (error) {
         console.error("initializeMqttClient " + error);
@@ -43,12 +51,6 @@ export const MQTTProvider = ({ children }: PropsWithChildren) => {
     };
 
     initializeMqttClient();
-
-    return () => {
-      console.log("CONTEXT CLEANUP");
-
-      MqttClient.disconnect();
-    };
   }, [isClientInitialized]);
 
   return (
