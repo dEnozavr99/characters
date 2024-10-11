@@ -1,7 +1,7 @@
 import { createContext } from "react";
 import MqttClient from "@ko-developerhong/react-native-mqtt";
 
-type State = {
+export type State = {
   client: typeof MqttClient;
 };
 
