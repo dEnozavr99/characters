@@ -4,6 +4,8 @@ import { SafeAreaView, StatusBar, useColorScheme } from "react-native";
 
 import { Colors } from "react-native/Libraries/NewAppScreen";
 
+import MQTTScreen from "./MQTTScreen";
+
 const MainScreen = () => {
   const isDarkMode = useColorScheme() === "dark";
 
@@ -17,6 +19,8 @@ const MainScreen = () => {
         barStyle={isDarkMode ? "light-content" : "dark-content"}
         backgroundColor={backgroundStyle.backgroundColor}
       />
+
+      <MQTTScreen />
     </SafeAreaView>
   );
 };
