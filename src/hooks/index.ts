@@ -1,3 +1,3 @@
-import { useMQTTClient } from "./mqtt";
+import { useMQTTClient, useMQTTConnection } from "./mqtt";
 
-export { useMQTTClient };
+export { useMQTTClient, useMQTTConnection };
