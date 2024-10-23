@@ -4,8 +4,6 @@ import { useMQTTClient } from "../../hooks";
 import { BROKER, CONNECTION_OPTIONS } from "./constant";
 import { ClientEvent } from "@ko-developerhong/react-native-mqtt";
 import type {
-  ConnectEventHandler,
-  DisconnectEventHandler,
   ErrorEventHandler,
   MessageEventHandler,
 } from "@ko-developerhong/react-native-mqtt";
@@ -21,9 +19,7 @@ const MQTT_OUT_TOPIC = "rn/test";
 const MESSAGE = "Hello from RN";
 
 export const useMQTTConnection = () => {
-  const { client } = useMQTTClient();
-
-  const [isClientConnected, setIsClientConnected] = useState(false);
+  const { client, isConnected } = useMQTTClient();
   const [currentData, setCurrentData] = useState<MessageData>({
     topic: "",
     message: "",
@@ -32,22 +28,6 @@ export const useMQTTConnection = () => {
 
   useEffect(() => {
     try {
-      const connectEventHandler: ConnectEventHandler = (reconnect) => {
-        console.log("IS RECONNECT", reconnect);
-
-        setIsClientConnected(true);
-      };
-
-      client.on(ClientEvent.Connect, connectEventHandler);
-
-      const disconnectEventHandler: DisconnectEventHandler = (cause) => {
-        console.log("DISCONNECT CAUSE", cause);
-
-        setIsClientConnected(false);
-      };
-
-      client.on(ClientEvent.Disconnect, disconnectEventHandler);
-
       const messageEventHandler: MessageEventHandler = (topic, message) => {
         const newData = { topic, message: message.toString() };
 
@@ -68,8 +48,6 @@ export const useMQTTConnection = () => {
       client.on(ClientEvent.Error, errorEventHandler);
 
       return () => {
-        client.off(ClientEvent.Connect, connectEventHandler);
-        client.off(ClientEvent.Disconnect, disconnectEventHandler);
         client.off(ClientEvent.Message, messageEventHandler);
         client.off(ClientEvent.Error, errorEventHandler);
       };
@@ -130,7 +108,7 @@ export const useMQTTConnection = () => {
   };
 
   return {
-    isClientConnected,
+    isClientConnected: isConnected,
     currentData,
     errorMessage,
     handleConnect,
