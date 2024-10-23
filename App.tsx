@@ -6,6 +6,7 @@
  */
 
 import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
 
 import { MQTTProvider } from "./src/providers/mqtt";
 
@@ -15,9 +16,11 @@ global.Buffer = require("buffer").Buffer;
 
 function App(): React.JSX.Element {
   return (
-    <MQTTProvider>
-      <MainScreen />
-    </MQTTProvider>
+    <NavigationContainer>
+      <MQTTProvider>
+        <MainScreen />
+      </MQTTProvider>
+    </NavigationContainer>
   );
 }
 
