@@ -10,7 +10,7 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import { MQTTProvider } from "./src/providers/mqtt";
 
-import { MainScreen } from "./src/screens";
+import { RootNavigator } from "./src/navigators";
 
 global.Buffer = require("buffer").Buffer;
 
@@ -18,7 +18,7 @@ function App(): React.JSX.Element {
   return (
     <NavigationContainer>
       <MQTTProvider>
-        <MainScreen />
+        <RootNavigator />
       </MQTTProvider>
     </NavigationContainer>
   );
