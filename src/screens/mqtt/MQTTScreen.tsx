@@ -1,9 +1,9 @@
-import { Button, View, Text, StyleSheet, Easing } from "react-native";
-import React, { useRef } from "react";
-
-import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { Button, View, Text, StyleSheet } from "react-native";
+import React, { useState } from "react";
 
 import { useMQTTConnection } from "./useMQTTConnection";
+
+import { CircularProgress } from "../../components";
 
 const MQTTScreen = () => {
   const {
@@ -17,28 +17,16 @@ const MQTTScreen = () => {
     handlePublish,
   } = useMQTTConnection();
 
+  const [animationValue, setAnimationValue] = useState<number>(0);
+
   const statusColor = isClientConnected ? "green" : "red";
 
-  const progressRef = useRef<AnimatedCircularProgress>(null);
-
-  const handleForvardProgress = () => {
-    const { current } = progressRef;
-
-    if (!current) {
-      return;
-    }
-
-    current.animate(100, 3000, Easing.linear);
+  const handleIncreaseValue = () => {
+    setAnimationValue((prevValue) => prevValue + 10);
   };
 
-  const handleBackwardProgress = () => {
-    const { current } = progressRef;
-
-    if (!current) {
-      return;
-    }
-
-    current.animate(0, 3000, Easing.linear);
+  const handleDecreaseValue = () => {
+    setAnimationValue((prevValue) => prevValue - 10);
   };
 
   return (
@@ -51,42 +39,21 @@ const MQTTScreen = () => {
         <Text>{`Error: ${errorMessage}`}</Text>
       </View>
 
-      <View style={{ alignItems: "center" }}>
-        <AnimatedCircularProgress
-          ref={progressRef}
-          size={150}
-          width={5}
-          backgroundWidth={15}
-          padding={10}
-          fill={0}
-          tintColor="turquoise"
-          tintColorSecondary="#c93103"
-          lineCap="round"
-          // renderCap={({ center }) => (
-          //   <Circle cx={center.x} cy={center.y} r="10" fill="cyan" />
-          // )}
-          onAnimationComplete={() => {
-            console.log("onAnimationComplete");
-          }}
-          backgroundColor="#211eaa"
-          arcSweepAngle={300}
-          rotation={210}
-        >
-          {(fill) => <Text>{Math.round(fill)}</Text>}
-        </AnimatedCircularProgress>
+      <View style={styles.progressContainer}>
+        <CircularProgress progressValue={animationValue} />
       </View>
 
       <View style={styles.footerContainer}>
         <View style={styles.buttonsContainer}>
           <Button
             color="green"
-            title="Forward animation"
-            onPress={handleForvardProgress}
+            title="Increase value"
+            onPress={handleIncreaseValue}
           />
           <Button
             color="red"
-            title="Backward animation"
-            onPress={handleBackwardProgress}
+            title="Decrease value"
+            onPress={handleDecreaseValue}
           />
         </View>
       </View>
@@ -126,6 +93,9 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  progressContainer: {
+    alignItems: "center",
   },
 });
 
