@@ -3,10 +3,17 @@ import { Animated, Easing, Text } from "react-native";
 
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
-const MIN_TEMP = -40;
-const MAX_TEMP = 60;
+const MIN_TEMP = -25;
+const MAX_TEMP = 50;
 
-const CircularProgress = ({ progressValue }: { progressValue: number }) => {
+const ARC_SWEEP_ANGLE = 280;
+const ROTATION = ARC_SWEEP_ANGLE / 2 + (360 - ARC_SWEEP_ANGLE);
+
+type CircularProgressProps = {
+  progressValue: number;
+};
+
+const CircularProgress = ({ progressValue }: CircularProgressProps) => {
   const progressRef = useRef<AnimatedCircularProgress>(null);
 
   const animateValue = useCallback((value: number) => {
@@ -34,19 +41,19 @@ const CircularProgress = ({ progressValue }: { progressValue: number }) => {
   return (
     <AnimatedCircularProgress
       ref={progressRef}
+      arcSweepAngle={ARC_SWEEP_ANGLE}
+      rotation={ROTATION}
       size={150}
       width={5}
-      backgroundWidth={15}
+      // backgroundWidth={15}
       padding={10}
       fill={0}
-      tintColor="turquoise"
-      tintColorSecondary="#c93103"
+      tintColor="pink"
+      // tintColorSecondary="red"
       lineCap="round"
-      backgroundColor="#211eaa"
-      arcSweepAngle={300}
-      rotation={210}
+      backgroundColor="white"
     >
-      {(fill) => <Text>{Math.round(fill)}</Text>}
+      {() => <Text>{progressValue.toFixed(2)}</Text>}
     </AnimatedCircularProgress>
   );
 };
