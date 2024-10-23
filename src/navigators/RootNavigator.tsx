@@ -13,7 +13,7 @@ const RootNavigator = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        name="Dashboard"
+        name="Dashboard Stack"
         component={DashboardStackNavigator}
         options={{ headerShown: false }}
       />
