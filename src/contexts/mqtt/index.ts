@@ -1,5 +1,5 @@
 import { MQTTContext } from "./MQTTContext";
-import type { State } from "./MQTTContext";
+import type { MessageData, State } from "./MQTTContext";
 
 export { MQTTContext };
-export type { State };
+export type { MessageData, State };
