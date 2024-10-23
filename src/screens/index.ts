@@ -1,4 +1,4 @@
-import MainScreen from "./main";
+import DashboardScreen from "./dashboard";
 import SettingsScreen from "./settings";
 
-export { MainScreen, SettingsScreen };
+export { DashboardScreen, SettingsScreen };

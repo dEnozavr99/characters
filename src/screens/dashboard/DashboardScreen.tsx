@@ -12,7 +12,7 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 
 import { CircularProgress } from "../../components";
 
-const MainScreen = () => {
+const DashboardScreen = () => {
   const [animationValue, setAnimationValue] = useState(0);
 
   const handleIncreaseValue = () => {
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MainScreen;
+export default DashboardScreen;
