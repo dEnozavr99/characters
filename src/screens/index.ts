@@ -1,4 +1,5 @@
 import MainScreen from "./main";
 import MQTTScreen from "./mqtt";
+import SettingsScreen from "./settings";
 
-export { MainScreen, MQTTScreen };
+export { MainScreen, MQTTScreen, SettingsScreen };
