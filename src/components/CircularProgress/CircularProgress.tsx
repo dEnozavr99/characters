@@ -47,7 +47,8 @@ const CircularProgress = ({ progressValue }: CircularProgressProps) => {
       width={5}
       padding={10}
       fill={0}
-      tintColor="pink"
+      tintColor="#1db796"
+      // tintColorSecondary="#b13c0e"
       lineCap="round"
       backgroundColor="white"
     >
