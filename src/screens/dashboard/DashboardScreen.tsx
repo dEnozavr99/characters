@@ -1,10 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { SafeAreaView, StyleSheet, Text, View, Dimensions } from "react-native";
 
-import { LineChart } from "react-native-chart-kit";
-import { LineChartData } from "react-native-chart-kit/dist/line-chart/LineChart";
-
-import { CircularProgress } from "../../components";
+import { CircularProgress, LineChart } from "../../components";
 
 import { useMQTTClient } from "../../hooks";
 
@@ -22,33 +19,14 @@ const getCurrentTimeString = () => {
 const DashboardScreen = () => {
   const { isConnected, data } = useMQTTClient();
 
-  const [temperatureData, setTemperatureData] = useState<LineChartData>({
-    labels: [],
-    datasets: [{ data: [] }],
-  });
-
   const temperatureValue = useMemo(
     () => (!isNaN(Number(data?.message)) ? Number(data?.message) : 0),
     [data?.message]
   );
-
-  useEffect(() => {
-    if (!isConnected) {
-      return;
-    }
-
-    setTemperatureData((prevData) => {
-      const nextData = { ...prevData };
-      const nextLabel = getCurrentTimeString();
-      const [nextDataset] = nextData.datasets;
-
-      nextData.labels.push(nextLabel);
-      nextDataset.data.push(temperatureValue);
-      nextData.datasets = [nextDataset];
-
-      return nextData;
-    });
-  }, [isConnected, temperatureValue]);
+  const chartValue = useMemo(
+    () => ({ label: getCurrentTimeString(), value: temperatureValue }),
+    [temperatureValue]
+  );
 
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
@@ -59,15 +37,12 @@ const DashboardScreen = () => {
         </View>
       </View>
 
-      {!!temperatureData.labels.length && (
+      {isConnected && (
         <View style={styles.footerContainer}>
           <LineChart
-            data={temperatureData}
+            nextValue={chartValue}
             width={Dimensions.get("window").width - 32}
             height={200}
-            chartConfig={{
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            }}
           />
         </View>
       )}
