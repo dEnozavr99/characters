@@ -4,7 +4,7 @@ import { useMQTTClient } from "..";
 
 import { BROKER, CONNECTION_OPTIONS } from "./constant";
 
-const MQTT_IN_TOPIC = "rn/temperature";
+const MQTT_IN_TOPIC = "esp32/test_out";
 const MQTT_OUT_TOPIC = "rn/test";
 
 const MOCKED_MESSAGE = "Hello from RN";
