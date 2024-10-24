@@ -2,14 +2,15 @@ import { ConnectionOptions } from "@ko-developerhong/react-native-mqtt";
 
 import { MQTT_BROKER, MQTT_USERNAME, MQTT_PASSWORD } from "@env";
 
-const BROKER = "test.mosquitto.org";
+// const BROKER = "test.mosquitto.org";
+const BROKER = MQTT_BROKER;
 
 const CLIENT_ID = "react_native_client";
 
 const CONNECTION_OPTIONS: ConnectionOptions = {
   clientId: CLIENT_ID,
-  // username: MQTT_USERNAME,
-  // password: MQTT_PASSWORD,
+  username: MQTT_USERNAME,
+  password: MQTT_PASSWORD,
   // keepAlive: 60,
   // autoReconnect: true,
   // protocol: "mqtt",
