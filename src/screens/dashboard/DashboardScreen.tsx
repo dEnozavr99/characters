@@ -1,62 +1,76 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { SafeAreaView, StyleSheet, Text, View, Dimensions } from "react-native";
 
-import {
-  Button,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  useColorScheme,
-  View,
-} from "react-native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+import { LineChart } from "react-native-chart-kit";
+import { LineChartData } from "react-native-chart-kit/dist/line-chart/LineChart";
 
 import { CircularProgress } from "../../components";
 
+import { useMQTTClient } from "../../hooks";
+
+const getCurrentTimeString = () => {
+  const currentDate = new Date();
+  const formatter = new Intl.DateTimeFormat("ua-UA", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  return formatter.format(currentDate);
+};
+
 const DashboardScreen = () => {
-  const [animationValue, setAnimationValue] = useState(0);
+  const { isConnected, data } = useMQTTClient();
 
-  const handleIncreaseValue = () => {
-    setAnimationValue((prevValue) => prevValue + 10);
-  };
+  const [temperatureData, setTemperatureData] = useState<LineChartData>({
+    labels: [],
+    datasets: [{ data: [] }],
+  });
 
-  const handleDecreaseValue = () => {
-    setAnimationValue((prevValue) => prevValue - 10);
-  };
+  const temperatureValue = useMemo(
+    () => (!isNaN(Number(data?.message)) ? Number(data?.message) : 0),
+    [data?.message]
+  );
 
-  const isDarkMode = useColorScheme() === "dark";
+  useEffect(() => {
+    if (!isConnected) {
+      return;
+    }
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    flex: 1,
-  };
+    setTemperatureData((prevData) => {
+      const nextData = { ...prevData };
+      const nextLabel = getCurrentTimeString();
+      const [nextDataset] = nextData.datasets;
+
+      nextData.labels.push(nextLabel);
+      nextDataset.data.push(temperatureValue);
+      nextData.datasets = [nextDataset];
+
+      return nextData;
+    });
+  }, [isConnected, temperatureValue]);
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? "light-content" : "dark-content"}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <View style={styles.progressContainer}>
-          <CircularProgress progressValue={animationValue} />
-        </View>
-
-        <View style={styles.footerContainer}>
-          <View style={styles.buttonsContainer}>
-            <Button
-              color="green"
-              title="Increase value"
-              onPress={handleIncreaseValue}
-            />
-            <Button
-              color="red"
-              title="Decrease value"
-              onPress={handleDecreaseValue}
-            />
-          </View>
+          <CircularProgress progressValue={temperatureValue} />
+          <Text>Temperature</Text>
         </View>
       </View>
+
+      {!!temperatureData.labels.length && (
+        <View style={styles.footerContainer}>
+          <LineChart
+            data={temperatureData}
+            width={Dimensions.get("window").width - 32}
+            height={200}
+            chartConfig={{
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            }}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -76,7 +90,7 @@ const styles = StyleSheet.create({
   footerContainer: {
     flex: 1,
     gap: 32,
-    justifyContent: "space-evenly",
+    alignItems: "center",
   },
   buttonsContainer: {
     flexDirection: "row",
