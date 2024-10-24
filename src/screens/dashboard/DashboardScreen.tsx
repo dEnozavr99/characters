@@ -1,5 +1,12 @@
-import React, { useMemo } from "react";
-import { SafeAreaView, StyleSheet, Text, View, Dimensions } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  ActivityIndicator,
+} from "react-native";
 
 import { CircularProgress, LineChart } from "../../components";
 
@@ -10,13 +17,38 @@ import { getCurrentTimeString } from "../../utils";
 const DashboardScreen = () => {
   const { isConnected, data } = useMQTTClient();
 
+  const [threshold, setThreshold] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchThreshold = async () => {
+      try {
+        setIsLoading(true);
+
+        const response = await fetch("http://192.168.31.93:8080/api/threshold");
+        const { threshold: thresholdData } = await response.json();
+
+        setThreshold(thresholdData);
+      } catch (error) {
+        console.error("Error while fetching threshold: " + error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchThreshold();
+  }, []);
+
   const temperatureValue = useMemo(
     () => (!isNaN(Number(data?.message)) ? Number(data?.message) : 0),
     [data?.message]
   );
   const chartValue = useMemo(
-    () => ({ label: getCurrentTimeString(), value: temperatureValue }),
-    [temperatureValue]
+    () => ({
+      label: getCurrentTimeString(),
+      values: [temperatureValue, threshold],
+    }),
+    [temperatureValue, threshold]
   );
 
   const shouldRenderChart = isConnected && temperatureValue !== 0;
@@ -28,17 +60,22 @@ const DashboardScreen = () => {
           <CircularProgress progressValue={temperatureValue} />
           <Text>Temperature</Text>
         </View>
-      </View>
 
-      {shouldRenderChart && (
-        <View style={styles.footerContainer}>
-          <LineChart
-            nextValue={chartValue}
-            width={Dimensions.get("window").width - 32}
-            height={200}
-          />
+        <View style={styles.progressContainer}>
+          <ActivityIndicator animating={isLoading} size="small" />
+          <Text>{`Threshold is: ${threshold}`}</Text>
         </View>
-      )}
+
+        <View style={styles.footerContainer}>
+          {shouldRenderChart && (
+            <LineChart
+              nextValue={chartValue}
+              width={Dimensions.get("window").width - 32}
+              height={200}
+            />
+          )}
+        </View>
+      </View>
     </SafeAreaView>
   );
 };

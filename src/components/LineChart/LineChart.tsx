@@ -3,20 +3,20 @@ import React, { useEffect, useState } from "react";
 import { LineChart as BaseLineChart } from "react-native-chart-kit";
 import { LineChartData } from "react-native-chart-kit/dist/line-chart/LineChart";
 
-const getCurrentTimeString = () => {
-  const currentDate = new Date();
-  const formatter = new Intl.DateTimeFormat("ua-UA", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
+// const getCurrentTimeString = () => {
+//   const currentDate = new Date();
+//   const formatter = new Intl.DateTimeFormat("ua-UA", {
+//     hour: "2-digit",
+//     minute: "2-digit",
+//     second: "2-digit",
+//   });
 
-  return formatter.format(currentDate);
-};
+//   return formatter.format(currentDate);
+// };
 
 type IncomingValue = {
   label: string;
-  value: number;
+  values: number[];
 };
 
 type LineChartProps = {
@@ -27,17 +27,22 @@ type LineChartProps = {
 
 const LineChart = ({ nextValue, width, height }: LineChartProps) => {
   const [chartData, setChartData] = useState<LineChartData>({
-    labels: [getCurrentTimeString()],
-    datasets: [{ data: [0] }],
+    labels: [],
+    datasets: [
+      { data: [], color: () => "#1db796" },
+      { data: [], color: () => "#ff0000", withDots: false },
+    ],
   });
 
   useEffect(() => {
     setChartData((prevData) => {
-      const { label, value } = nextValue;
+      const { label, values } = nextValue;
       const nexData = { ...prevData };
 
       nexData.labels.push(label);
-      nexData.datasets[0].data.push(value);
+      values.forEach((value, index) => {
+        nexData.datasets[index].data.push(value);
+      });
 
       return nexData;
     });
@@ -50,7 +55,7 @@ const LineChart = ({ nextValue, width, height }: LineChartProps) => {
       width={width}
       height={height}
       chartConfig={{
-        color: () => "#1db796",
+        color: () => "#095103",
         backgroundGradientFrom: "#ffffff",
         backgroundGradientTo: "#ffffff",
       }}
