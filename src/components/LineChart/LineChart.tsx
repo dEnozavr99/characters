@@ -3,6 +3,17 @@ import React, { useEffect, useState } from "react";
 import { LineChart as BaseLineChart } from "react-native-chart-kit";
 import { LineChartData } from "react-native-chart-kit/dist/line-chart/LineChart";
 
+const getCurrentTimeString = () => {
+  const currentDate = new Date();
+  const formatter = new Intl.DateTimeFormat("ua-UA", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  return formatter.format(currentDate);
+};
+
 type IncomingValue = {
   label: string;
   value: number;
@@ -16,8 +27,8 @@ type LineChartProps = {
 
 const LineChart = ({ nextValue, width, height }: LineChartProps) => {
   const [chartData, setChartData] = useState<LineChartData>({
-    labels: [],
-    datasets: [{ data: [] }],
+    labels: [getCurrentTimeString()],
+    datasets: [{ data: [0] }],
   });
 
   useEffect(() => {

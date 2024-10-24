@@ -5,16 +5,7 @@ import { CircularProgress, LineChart } from "../../components";
 
 import { useMQTTClient } from "../../hooks";
 
-const getCurrentTimeString = () => {
-  const currentDate = new Date();
-  const formatter = new Intl.DateTimeFormat("ua-UA", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
-
-  return formatter.format(currentDate);
-};
+import { getCurrentTimeString } from "../../utils";
 
 const DashboardScreen = () => {
   const { isConnected, data } = useMQTTClient();
@@ -28,6 +19,8 @@ const DashboardScreen = () => {
     [temperatureValue]
   );
 
+  const shouldRenderChart = isConnected && temperatureValue !== 0;
+
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
       <View style={styles.container}>
@@ -37,7 +30,7 @@ const DashboardScreen = () => {
         </View>
       </View>
 
-      {isConnected && (
+      {shouldRenderChart && (
         <View style={styles.footerContainer}>
           <LineChart
             nextValue={chartValue}
