@@ -51,7 +51,7 @@ const DashboardScreen = () => {
   }, [isConnected, temperatureValue]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.safeAreaContainer}>
       <View style={styles.container}>
         <View style={styles.progressContainer}>
           <CircularProgress progressValue={temperatureValue} />
@@ -76,6 +76,9 @@ const DashboardScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  safeAreaContainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     justifyContent: "space-between",
