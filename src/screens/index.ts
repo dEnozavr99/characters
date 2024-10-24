@@ -1,4 +1,4 @@
-import MainScreen from "./main";
-import MQTTScreen from "./mqtt";
+import DashboardScreen from "./dashboard";
+import SettingsScreen from "./settings";
 
-export { MainScreen, MQTTScreen };
+export { DashboardScreen, SettingsScreen };

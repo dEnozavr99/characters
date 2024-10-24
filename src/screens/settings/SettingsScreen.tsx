@@ -1,15 +1,11 @@
 import { Button, View, Text, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 
-import { useMQTTConnection } from "./useMQTTConnection";
+import { useMQTTClient, useMQTTConnection } from "../../hooks";
 
-import { CircularProgress } from "../../components";
-
-const MQTTScreen = () => {
+const SettingsScreen = () => {
+  const { isConnected, data, errorMessage } = useMQTTClient();
   const {
-    isClientConnected,
-    currentData,
-    errorMessage,
     handleConnect,
     handleDisconnect,
     handleSubscribe,
@@ -17,45 +13,16 @@ const MQTTScreen = () => {
     handlePublish,
   } = useMQTTConnection();
 
-  const [animationValue, setAnimationValue] = useState<number>(0);
-
-  const statusColor = isClientConnected ? "green" : "red";
-
-  const handleIncreaseValue = () => {
-    setAnimationValue((prevValue) => prevValue + 10);
-  };
-
-  const handleDecreaseValue = () => {
-    setAnimationValue((prevValue) => prevValue - 10);
-  };
+  const statusColor = isConnected ? "green" : "red";
 
   return (
     <View style={styles.container}>
       <View style={styles.captionsContainer}>
         <Text
           style={{ color: statusColor }}
-        >{`Client is: ${isClientConnected ? "connected" : "disconnected"}`}</Text>
-        <Text>{`Topic: ${currentData?.topic} | Message: ${currentData?.message}`}</Text>
-        <Text>{`Error: ${errorMessage}`}</Text>
-      </View>
-
-      <View style={styles.progressContainer}>
-        <CircularProgress progressValue={animationValue} />
-      </View>
-
-      <View style={styles.footerContainer}>
-        <View style={styles.buttonsContainer}>
-          <Button
-            color="green"
-            title="Increase value"
-            onPress={handleIncreaseValue}
-          />
-          <Button
-            color="red"
-            title="Decrease value"
-            onPress={handleDecreaseValue}
-          />
-        </View>
+        >{`Client is: ${isConnected ? "connected" : "disconnected"}`}</Text>
+        <Text>{`Topic: ${data?.topic} | Message: ${data?.message}`}</Text>
+        {errorMessage && <Text>{`Error: ${errorMessage}`}</Text>}
       </View>
 
       <View style={styles.footerContainer}>
@@ -99,4 +66,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MQTTScreen;
+export default SettingsScreen;
